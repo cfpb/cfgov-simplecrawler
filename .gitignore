@@ -2,6 +2,7 @@
 ###################
 cache/
 sitemap/
+db/cfpb-content.db
 
 # Compiled source #
 ###################
