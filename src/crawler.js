@@ -97,6 +97,33 @@ function _addSiteIndexEvents( crawler ) {
     callback( null, !queueItem.path.match( /(page=)/ ) );
   });
 
+  // Don't fetch certain eregs page
+  crawler.addFetchCondition( function( queueItem, referrerQueueItem, callback ) {
+    var fetch = true;
+    var path = queueItem.path;
+    var eregs = path.indexOf( 'eregulations' ) > -1;
+    var dash = path.indexOf( '-' ) > -1;
+    var depth = path.match( /\//gi ) && path.match( /\//gi ).length > 2;
+    if ( eregs && ( dash || depth ) ) {
+      fetch = false;
+    }
+
+    callback( null, fetch );
+  });
+
+  // Don't fetch /askcfpb/ urls
+  crawler.addFetchCondition( function( queueItem, referrerQueueItem, callback ) {
+    callback( null, !queueItem.path.match( /(\/askcfpb\/)/ ) );
+  });
+
+  // Don't fetch /ask-cfpb/slug/ urls
+  crawler.addFetchCondition( function( queueItem, referrerQueueItem, callback ) {
+    var path = queueItem.path;
+    var check = path.indexOf( 'ask-cfpb' ) > -1 && path.indexOf( 'slug' ) > -1;
+    callback( null, !check );
+  });  
+
+
   // Log errors
   crawler.on( 'fetchclienterror', function( queueItem, error ) {
     console.log( 'fetch client error:' + error );
